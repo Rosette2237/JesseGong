@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>JesseGong</title>
+    <meta name="description" content="Personal site for JesseGong" />
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body>
+    <header class="container">
+      <nav class="nav">
+        <a class="brand" href="./">JesseGong</a>
+        <div class="links">
+          <a href="#projects">Projects</a>
+          <a href="#about">About</a>
+          <a href="#contact">Contact</a>
+          <a href="https://github.com/Rosette2237" target="_blank" rel="noopener">GitHub</a>
+        </div>
+      </nav>
+      <section class="hero">
+        <h1>Hi, I’m Jesse</h1>
+        <p>Welcome to my project site on GitHub Pages.</p>
+        <a class="button" href="#projects">See my work</a>
+      </section>
+    </header>
+
+    <main class="container">
+      <section id="projects">
+        <h2>Projects</h2>
+        <div class="grid">
+          <article class="card">
+            <h3>Project One</h3>
+            <p>Short description of something cool.</p>
+            <a class="text-link" href="https://github.com/Rosette2237/JesseGong" target="_blank" rel="noopener">View repo</a>
+          </article>
+          <article class="card">
+            <h3>Project Two</h3>
+            <p>Another neat thing I built.</p>
+            <a class="text-link" href="#" target="_blank" rel="noopener">View</a>
+          </article>
+        </div>
+      </section>
+
+      <section id="about">
+        <h2>About</h2>
+        <p>I like building things with code. This site is deployed with GitHub Pages.</p>
+      </section>
+
+      <section id="contact">
+        <h2>Contact</h2>
+        <p>Say hi: <a href="mailto:you@example.com">you@example.com</a></p>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <small>© <span id="y"></span> JesseGong • <a href="https://github.com/Rosette2237/JesseGong" target="_blank" rel="noopener">Source on GitHub</a></small>
+      </div>
+      <script>
+        document.getElementById('y').textContent = new Date().getFullYear();
+      </script>
+    </footer>
+  </body>
+</html>
