@@ -3,63 +3,100 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>JesseGong</title>
-    <meta name="description" content="Personal website for Jesse Gong" />
+    <title>Boyang Gong — Home</title>
+    <meta name="description" content="Personal website for Boyang Gong" />
     <link rel="stylesheet" href="assets/styles.css" />
   </head>
   <body>
     <header class="container">
       <nav class="nav">
-        <a class="brand" href="./">JesseGong</a>
+        <a class="brand" href="index.html">Boyang Gong</a>
         <div class="links">
-          <a href="#projects">Projects</a>
-          <a href="#about">About</a>
-          <a href="#contact">Contact</a>
+          <a href="index.html">Home</a>
+          <a href="research.html">Research</a>
+          <a href="projects.html">Projects</a>
+          <a href="internship.html">Internship</a>
+          <a href="leadership.html">Leadership</a>
+          <a href="awards.html">Awards</a>
+          <a href="interests.html">Interests</a>
           <a href="https://github.com/Rosette2237" target="_blank" rel="noopener">GitHub</a>
         </div>
       </nav>
-      <section class="hero">
-        <h1>Hi, I’m Jesse</h1>
-        <p>Welcome to my project site on GitHub Pages.</p>
-        <a class="button" href="#projects">See my work</a>
-      </section>
     </header>
 
-    <main class="container">
-      <section id="projects">
-        <h2>Projects</h2>
-        <div class="grid">
-          <article class="card">
-            <h3>Project One</h3>
-            <p>Short description of something cool.</p>
-            <a class="text-link" href="https://github.com/Rosette2237/JesseGong" target="_blank" rel="noopener">View repo</a>
-          </article>
-          <article class="card">
-            <h3>Project Two</h3>
-            <p>Another neat thing I built.</p>
-            <a class="text-link" href="#" target="_blank" rel="noopener">View</a>
-          </article>
-        </div>
-      </section>
+    <main class="container site-main">
+      <div class="layout-2col">
+        <!-- Main (wider) column -->
+        <section class="main">
+          <h1 class="title text-center">Boyang Gong</h1>
+          <p class="lead">Undergraduate Student, Georgia Institute of Technology, Atlanta, USA</p>
 
-      <section id="about">
-        <h2>About</h2>
-        <p>I like building things with code. This site is deployed with GitHub Pages.</p>
-      </section>
+          <div class="prose">
+            <p>
+              I am an undergraduate student at the Georgia Institute of Technology, majoring in Industrial Engineering and Computer Science. 
+              I am broadly interested in machine learning, neuron networks, and data science. I enjoy building things that combine
+              these fields with an emphasis on real-world applications.
+            </p>
+            <p>
+              I worked with Nezir with
+              <a href="https://github.com/nezir99/Neuron-Interpretability" target="_blank" rel="noopener">Neuron project</a>.
+            </p>
+            <p>
+              Recently I’ve been working on [project or topic]. Outside of work, I like [interests].
+              This site hosts my research notes, project write-ups, and a bit about me.
+            </p>
+          </div>
 
-      <section id="contact">
-        <h2>Contact</h2>
-        <p>Say hi: <a href="mailto:you@example.com">you@example.com</a></p>
-      </section>
+          <!-- Optional: highlight items in cards -->
+          <div class="grid">
+            <article class="card card--plain">
+              <h3>What I’m exploring</h3>
+              <p class="prose">A quick blurb about a current research direction or area of study.</p>
+            </article>
+            <article class="card">
+              <h3>Current project</h3>
+              <p class="prose">A short description of a project you’re actively developing.</p>
+            </article>
+          </div>
+        </section>
+
+        <!-- Sidebar (narrower) column -->
+        <aside class="sidebar">
+          <figure class="card card--plain figure">
+            <img
+              class="img-responsive rounded shadow"
+              src="assets/img/headshot.jpg"
+              alt="Headshot of Jesse Gong"
+              width="480" height="480"
+            />
+            <figcaption>Based in [City, Country]. Open to collaborations.</figcaption>
+          </figure>
+
+          <section class="card card--plain">
+            <h3>Education</h3>
+            <ul class="list">
+              <li><strong>[University Name]</strong> — B.S. in [Major], [Year]</li>
+              <li><strong>[University/Program]</strong> — [Degree/Cert], [Year]</li>
+            </ul>
+          </section>
+        </aside>
+      </div>
+
+      <div class="prose">
+        My <a href="assets/docs/JesseGong_CV.pdf" target="_blank" rel="noopener">CV</a> is here.
+      </div>
     </main>
 
     <footer class="footer">
       <div class="container">
-        <small>© <span id="y"></span> JesseGong • <a href="https://github.com/Rosette2237/JesseGong" target="_blank" rel="noopener">Source on GitHub</a></small>
+        <small>© <span id="y"></span> JesseGong •
+          <a href="https://github.com/Rosette2237/JesseGong" target="_blank" rel="noopener">Source on GitHub</a>
+        </small>
       </div>
       <script>
         document.getElementById('y').textContent = new Date().getFullYear();
       </script>
     </footer>
+
   </body>
 </html>
