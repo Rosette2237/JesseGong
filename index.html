@@ -42,7 +42,7 @@
               <a href="https://github.com/nezir99/Neuron-Interpretability" target="_blank" rel="noopener">Neuron project</a>.
             </p>
             <p>
-              Recently I’ve been working on [project or topic]. Outside of work, I like [interests].
+              Recently I’ve been working on machine learning and data science. Outside of work, I like hiking.
               This site hosts my research notes, project write-ups, and a bit about me.
             </p>
           </div>
@@ -51,11 +51,78 @@
           <div class="grid">
             <article class="card card--plain">
               <h3>What I’m exploring</h3>
-              <p class="prose">A quick blurb about a current research direction or area of study.</p>
+              <p class="prose">Current research direction or area of study.</p>
             </article>
             <article class="card">
               <h3>Current project</h3>
-              <p class="prose">A short description of a project you’re actively developing.</p>
+              <p class="prose">
+
+                <h4>GT Movie Store Description</h4>
+    <ol>
+        <li>The app provides an informational Home and About section using Django templates rendered from the home application. These pages are served through the standard URL routing, view functions, and HTML templates that extend a shared base layout.</li>
+        
+        <li>User registration is implemented with Django’s built-in authentication system by providing a signup page that creates a new User record. After successful registration, the user is redirected so they can begin using protected features of the store.</li>
+        
+        <li>Login is implemented through Django authentication so a registered user can securely access their account session. Once authenticated, Django maintains the login state using sessions, allowing the user to navigate the site without re-entering credentials on each page.</li>
+        
+        <li>The movies list is implemented with a Movie database model and a movies index page that queries the database and displays the results. The output is rendered in a template using Bootstrap styling to show each movie in a consistent layout.</li>
+        
+        <li>Movie search is implemented by reading a query string from the URL and filtering Movie objects with a case-insensitive title match. The filtered results are passed back to the same list template so the user can quickly refine selections.</li>
+        
+        <li>The shopping cart is implemented using Django sessions so cart data persists across page navigations without requiring an account-based cart model. A dedicated cart page reads the session data and renders the current cart items for the user.</li>
+        
+        <li>Adding items to the cart is implemented with a POST form on the movie detail page that submits the desired quantity. The cart view updates the session-stored cart dictionary so the user can accumulate items over time.</li>
+        
+        <li>Review creation is implemented with a Review model connected to both the Movie and the authenticated User. A form on the movie detail page sends review content to a create-review view that saves it and refreshes the page to show the new entry.</li>
+        
+        <li>Clearing the cart is implemented as a dedicated action that removes the cart data from the user’s session storage. After the session is updated, the user is redirected back to the cart page where the empty state is displayed.</li>
+        
+        <li>Editing reviews is implemented by providing an edit view and template that loads the existing Review and saves the updated content on submission. Authorization logic ensures only the owner of a review is allowed to access the edit functionality.</li>
+        
+        <li>Deleting reviews is implemented through a delete view that removes the selected Review from the database and then redirects back to the related movie page. Ownership checks prevent users from deleting reviews they did not create.</li>
+        
+        <li>Viewing reviews for a movie is implemented by querying all Review objects linked to the selected Movie and sending them to the movie detail template. The template renders the review list in the comment section so users can evaluate feedback before purchasing.</li>
+        
+        <li>Viewing movie details is implemented using a dedicated movie detail page that loads one Movie object and displays its fields like title, description, price, and image. The template uses responsive styling so images and content stay within the page layout across screen sizes.</li>
+        
+        <li>The orders list is implemented using Order records associated with the logged-in user and displayed through an orders page. The page queries the user’s order history and renders it in a readable format so the user can track purchases and spending.</li>
+        
+        <li>Access from any desktop browser is achieved by building the application as a standard Django web platform that runs on a web server and is reachable through a URL. The deployment setup ensures the site can be accessed over the internet with normal browser navigation.</li>
+        
+        <li>A responsive GUI is achieved by using Bootstrap components such as a responsive navbar, grid layout, and utility classes. The templates and CSS are designed so content scales and rearranges appropriately for different screen sizes.</li>
+        
+        <li>Administrator management of users is provided through Django’s built-in admin panel, which includes full user CRUD operations for authorized staff. Admin accounts can view, create, update, or remove users to keep account information current.</li>
+        
+        <li>Administrator management of movies is implemented by registering the Movie model in the Django admin and configuring ModelAdmin options such as searching and ordering. This allows admins to add new movies, edit existing data, or delete entries quickly.</li>
+        
+        <li>Administrator management of reviews is implemented by registering the Review model in the admin and enabling filters and searches for moderation. Admins can update or remove reviews to maintain quality and enforce content standards.</li>
+        
+        <li>Administrator management of orders is implemented by registering Order and related item models in the admin interface. This allows staff to inspect transactions and maintain order records in an organized way.</li>
+        
+        <li>Reporting inappropriate reviews is implemented by adding a report action on each review and handling it with a protected view that records the report and hides the review. Hidden reviews are excluded from future page rendering so the comment section stays relevant and clean.</li>
+    </ol>
+
+                <h4>Process description (how I worked)</h4>
+                <p>
+                    I worked on this project by following the textbook’s structure and progression, and I used an agile approach: I started directly from the user stories, implementing one feature at a time until each story’s behavior was working end-to-end.
+                </p>
+                <p>
+                    As I implemented each feature, I went back into the textbook to find the corresponding sections that matched what I needed (URLs , views, templates, then models/migrations, auth, sessions, admin, etc.).
+                </p>
+                <p>
+                    Whenever I got stuck or hit unexpected errors, I used Stack Overflow and online searches/documentation to troubleshoot and resolve the issue efficiently.
+                </p>
+
+                <h4>Video Demo</h4>
+                <p>
+                    <a href="https://teams.microsoft.com/l/meetingrecap?driveId=b%21aj7E8aHW6kGrjn2QDDCotHYsE4yfSk9CgIJ4q3XcyHJtWDQu7yrlS7oyvZE0ASSk&driveItemId=015WXI4CLTJONAW7FBSJF35TPP4ZT4PLE5&sitePath=https%3A%2F%2Fgtvault-my.sharepoint.com%2F%3Av%3A%2Fg%2Fpersonal%2Fbgong36_gatech_edu%2FIQBzS5oLfKGSS77N7-Znx6ydAb9KRKgP8zvkPm5cfM_WcLQ&fileUrl=https%3A%2F%2Fgtvault-my.sharepoint.com%2Fpersonal%2Fbgong36_gatech_edu%2FDocuments%2FRecordings%2FCS+2340+Project+1+-+Introduction+to+Django-20260202_234534-Meeting+Recording.mp4%3Fweb%3D1&threadId=19%3Ameeting_YTA0YTIwNDEtOGJhYi00YTc3LTgyNGUtMjZmMzIyYTc0YTE5%40thread.v2&organizerId=a1d257ff-7bc4-4564-9f08-590535c31cb7&tenantId=482198bb-ae7b-4b25-8b7a-6d7f32faa083&callId=cd2426b6-0893-461b-8408-c87c0297054b&threadType=Meeting&meetingType=MeetNow&subType=RecapSharingLink_RecapCore">Project Demo Video</a>
+                </p>
+
+
+
+
+
+              </p>
             </article>
           </div>
         </section>
@@ -69,14 +136,13 @@
               alt="Headshot of Jesse Gong"
               width="480" height="480"
             />
-            <figcaption>Based in [City, Country]. Open to collaborations.</figcaption>
+            <figcaption>Based in Atlanta, GA. Open to collaborations.</figcaption>
           </figure>
 
           <section class="card card--plain">
             <h3>Education</h3>
             <ul class="list">
-              <li><strong>[University Name]</strong> — B.S. in [Major], [Year]</li>
-              <li><strong>[University/Program]</strong> — [Degree/Cert], [Year]</li>
+              <li><strong>Georgia Institute of Technology</strong> — B.S. in Industrial Engineering, 2028</li>
             </ul>
           </section>
         </aside>
