@@ -1,0 +1,50 @@
+my-portfolio/
+├─ app/
+│  ├─ layout.tsx                # Root layout: persistent Navbar/Footer live here
+│  ├─ globals.css               # Tailwind + global styles
+│  ├─ page.tsx                  # Home
+│  ├─ research/page.tsx
+│  ├─ projects/page.tsx
+│  ├─ internships/page.tsx
+│  ├─ leadership/page.tsx
+│  ├─ awards/page.tsx
+│  ├─ interests/page.tsx
+│  ├─ skills/page.tsx
+│  └─ not-found.tsx
+│
+├─ components/
+│  ├─ Navbar.tsx                # Top nav w/ GitHub external link
+│  ├─ Footer.tsx
+│  ├─ SectionHeader.tsx
+│  ├─ Card.tsx
+│  ├─ CardGrid.tsx              # Reusable grid layout for all tabs
+│  └─ Reveal.tsx                # Optional: scroll-reveal wrapper
+│
+├─ content/                     # “Only edit here” content source of truth
+│  ├─ research/                 # One file per item (MDX or JSON/TS)
+│  ├─ projects/
+│  ├─ internships/
+│  ├─ leadership/
+│  ├─ awards/
+│  ├─ interests/
+│  └─ skills/
+│
+├─ lib/
+│  ├─ site.ts                   # Site-wide config (name, links, nav items)
+│  ├─ content.ts                # Load + normalize content for pages
+│  └─ types.ts                  # TypeScript types for cards/entries
+│
+├─ public/
+│  ├─ files/
+│  │  ├─ cv.pdf                 # ✅ your CV goes here
+│  │  └─ transcript.pdf         # (optional)
+│  ├─ images/
+│  │  ├─ headshot.jpg
+│  │  └─ projects/...
+│  └─ favicon.ico
+│
+├─ next.config.ts               # Static export + GH Pages path settings
+├─ tailwind.config.ts
+├─ postcss.config.mjs
+├─ package.json
+└─ README.md
