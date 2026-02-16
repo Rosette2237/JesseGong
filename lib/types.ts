@@ -1,7 +1,6 @@
 // JesseGong/lib/types.ts
 
-/** Site sections (tabs). */
-export type SectionKey =
+export type ContentCollectionKey =
   | "research"
   | "projects"
   | "internships"
@@ -10,157 +9,141 @@ export type SectionKey =
   | "skills"
   | "interests";
 
-/**
- * Use ISO date strings for reliable sorting and timeline behavior.
- * Recommended format: YYYY-MM-DD (e.g., "2025-08-15").
- */
-export type ISODateString = string;
-
-/** Basic image reference (served from /public). */
-export type ContentImage = {
-  /** Example: "/images/projects/gt-market-place.jpg" */
+/** Used for cards, logos, and backgrounds (paths should be under /public). */
+export type ImageAsset = {
+  /** Example: "/images/logos/crossroads.png" */
   src: string;
-  alt: string;
+  alt?: string;
 };
 
-/**
- * Link model used across the site.
- * - style is a UI hint: CardGrid will enforce (first=button, second=text link).
- */
 export type LinkStyle = "button" | "link";
 
+/** Keep flexible; you can standardize later without blocking builds. */
 export type LinkKind =
-  | "details"   // internal details page or section
-  | "repo"      // GitHub repository
-  | "demo"      // live demo
-  | "paper"     // paper / write-up
-  | "download"  // file download (e.g., CV)
-  | "external"; // any other external URL
+  | "details"
+  | "repo"
+  | "demo"
+  | "paper"
+  | "slides"
+  | "website"
+  | "other"
+  | (string & {});
 
+/** A link shown on cards/detail pages. */
 export type ContentLink = {
   label: string;
-  href: string; // internal ("/projects#x" or "/projects/foo") or external ("https://...")
+  href: string;
   kind?: LinkKind;
+  openInNewTab?: boolean;
+  /** Optional: some pages compute this (e.g., primary button + secondary link) */
   style?: LinkStyle;
-  openInNewTab?: boolean; // default behavior can be applied in UI helpers
 };
 
 /**
- * Chronology metadata to support sorting + timeline UIs.
- * Pick ONE kind per entry; UI can sort/group based on it.
+ * Optional chronological metadata to support timelines/grouping.
+ * (Your pages already infer year from timeframe if this is missing.)
  */
 export type Chronology =
   | {
-      kind: "index";
-      /** Lower index = earlier in the timeline. */
-      index: number;
+      kind: "year";
+      year: number;
+      /** Higher = newer within the same year group */
+      order?: number;
     }
   | {
       kind: "date";
-      start: ISODateString;
-      end?: ISODateString;
-    }
-  | {
-      kind: "year";
-      year: number;
-      /** Optional ordering within the year group (0,1,2...). */
-      order?: number;
+      /** ISO date string, e.g. "2026-01-15" */
+      date: string;
     };
 
 /**
- * Canonical base entry fields you said should exist for every item.
- * This is your “single source of truth” schema for content/.
+ * Base fields shared across all collections.
+ * Keep these stable because many components rely on them.
  */
 export type BaseEntry = {
-  section: SectionKey;
-
-  /** Stable unique identifier (used for keys, anchors, etc.). */
   id: string;
-
-  /** URL-safe slug used for anchors (#slug) and/or detail routes. */
+  /** Used for dynamic routes: /internships/[slug], /projects/[slug], etc. */
   slug: string;
 
   title: string;
-  description: string;
-  timeframe: string; // display text (e.g., "Fall 2025", "May–Aug 2025")
 
+  /** Short description shown on list/timeline cards */
+  description: string;
+
+  /** Human-readable time range, e.g. "May 2025 – Aug 2025" */
+  timeframe: string;
+
+  /** Tags/stack labels (can be empty array if none yet) */
   tags: string[];
 
-  /** 1–2 links will be rendered in cards/lists. (We’ll enforce UI-side.) */
+  /** Links shown on cards/detail pages (can be empty array, but your design prefers 1–2) */
   links: ContentLink[];
 
-  image?: ContentImage;
-
-  /** Optional, but strongly recommended for timeline/list ordering. */
-  chronology?: Chronology;
+  /**
+   * Primary image:
+   * - projects: background or hero image
+   * - internships: company logo (required by InternshipEntry override)
+   * - research: optional hero image
+   */
+  image?: ImageAsset;
 
   /**
-   * Optional longer detail text for future “expand” behaviors,
-   * or for seeding a detail page.
+   * Long-form text used by detail pages (optional; can be filled later).
+   * Your detail pages currently fall back to description if this is missing.
    */
   details?: string;
 
   /**
-   * Optional internal detail route if you want dedicated pages later:
-   * e.g., "/projects/gt-market-place"
+   * Optional explicit details route override.
+   * If omitted, pages assume `/<collection>/${slug}`.
    */
   detailsHref?: string;
+
+  chronology?: Chronology;
 };
 
-/** Section-specific specializations (add more fields later as needed). */
-export type ResearchEntry = BaseEntry & {
-  section: "research";
-};
-
-export type ProjectEntry = BaseEntry & {
-  section: "projects";
-};
-
+/**
+ * Internship entries (REQUIRED fields per your instruction).
+ * Separate from other sections for now.
+ */
 export type InternshipEntry = BaseEntry & {
-  section: "internships";
+  // Override: require logo image
+  image: ImageAsset;
+
+  company: string;
+  position: string;
+  location: string;
+
+  /** Bullet list used on detail page and optionally on the timeline card */
+  responsibilities: string[];
+
+  /** Impact/results list */
+  outcomes: string[];
 
   /**
-   * Useful for your “year segments” UI:
-   * internships grouped by year, then ordered within year.
+   * Additional images (optional alt per image, but array itself is REQUIRED).
+   * Example use: photos, screenshots, offer letter snippet, etc.
    */
-  year?: number;
-  sequenceInYear?: number;
+  images: ImageAsset[];
 };
 
-export type LeadershipEntry = BaseEntry & {
-  section: "leadership";
-};
+/**
+ * Other sections (kept separate for now).
+ * You can refine these later when their detail-page schemas stabilize.
+ */
+export type ResearchEntry = BaseEntry;
+export type ProjectEntry = BaseEntry;
+export type LeadershipEntry = BaseEntry;
+export type AwardEntry = BaseEntry;
+export type SkillEntry = BaseEntry;
+export type InterestEntry = BaseEntry;
 
-export type AwardsEntry = BaseEntry & {
-  section: "awards";
-};
-
-export type SkillsEntry = BaseEntry & {
-  section: "skills";
-};
-
-export type InterestsEntry = BaseEntry & {
-  section: "interests";
-};
-
+/** Convenience union used by generic components/pages that don’t care about collection-specific fields. */
 export type AnyEntry =
   | ResearchEntry
   | ProjectEntry
   | InternshipEntry
   | LeadershipEntry
-  | AwardsEntry
-  | SkillsEntry
-  | InterestsEntry;
-
-/**
- * A lightweight “Card-ready” model (matches the fields your Card component expects).
- * Later, we’ll refactor Card.tsx to import these types instead of defining its own.
- */
-export type CardModel = {
-  title: string;
-  description: string;
-  timeframe: string;
-  tags: string[];
-  links: ContentLink[];
-  image?: ContentImage;
-};
+  | AwardEntry
+  | SkillEntry
+  | InterestEntry;
