@@ -5,6 +5,8 @@ import type { AnyEntry, ContentCollectionKey } from "./types";
 import researchIndex from "../content/research";
 import projectsIndex from "../content/projects";
 import internshipsIndex from "../content/internships";
+import leadershipIndex from "../content/leadership";
+import awardsIndex from "../content/awards";
 
 /**
  * Central content API:
@@ -99,9 +101,10 @@ const contentRegistry: Record<ContentCollectionKey, AnyEntry[]> = {
   projects: sortEntries(projectsIndex as AnyEntry[]),
   internships: sortEntries(internshipsIndex as AnyEntry[]),
 
-  // Not switched yet (safe empty until you add content + index files)
-  leadership: [],
-  awards: [],
+  leadership: sortEntries(leadershipIndex as AnyEntry[]),
+  awards: sortEntries(awardsIndex as AnyEntry[]),
+
+  // Still not through lib/content.ts (custom data)
   skills: [],
   interests: [],
 };

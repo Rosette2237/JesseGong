@@ -36,7 +36,7 @@ my-portfolio/
 │
 ├─ public/
 │  ├─ files/
-│  │  ├─ cv.pdf                 # ✅ your CV goes here
+│  │  ├─ cv.pdf                 # CV goes here
 │  │  └─ transcript.pdf         # (optional)
 │  ├─ images/
 │  │  ├─ headshot.jpg

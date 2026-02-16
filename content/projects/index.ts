@@ -8,7 +8,11 @@ import type { ProjectEntry } from "../../lib/types";
  *   import marketplace from "./gt-market-place";
  *   export const projects: ProjectEntry[] = [marketplace, ...];
  */
+import marketplace from "./gt-market-place";
+import signSync from "./sign-sync";
+import stockDL from "./deep-learning-based-stock-prediction";
 
-export const projects: ProjectEntry[] = [];
+// NOTE: lib/content.ts will re-sort again, but this list is still useful as the source of truth.
+export const projects: ProjectEntry[] = [marketplace, signSync, stockDL];
 
 export default projects;
