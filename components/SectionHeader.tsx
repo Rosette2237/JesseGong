@@ -37,7 +37,8 @@ export type SectionHeaderProps = {
   className?: string;
 };
 
-function isExternalHref(href: string): boolean {
+function isExternalHref(href?: string): boolean {
+  if (!href) return false; // Guard against missing href to prevent runtime errors
   return href.startsWith("http://") || href.startsWith("https://") || href.startsWith("mailto:");
 }
 
@@ -57,12 +58,13 @@ export default function SectionHeader({
       ? "text-4xl md:text-5xl"
       : "text-2xl md:text-3xl";
 
-  const actionIsExternal = action ? isExternalHref(action.href) : false;
-  const actionHref = action
+  const hasActionHref = Boolean(action?.href);
+  const actionIsExternal = hasActionHref ? isExternalHref(action!.href) : false;
+  const actionHref = hasActionHref
     ? actionIsExternal
-      ? action.href
-      : withBasePath(action.href)
-    : "";
+      ? action!.href
+      : withBasePath(action!.href)
+    : undefined;
 
   // Default behavior: open external links in a new tab unless user overrides
   const openInNewTab =
@@ -89,7 +91,7 @@ export default function SectionHeader({
           ) : null}
         </div>
 
-        {action ? (
+        {action && hasActionHref ? (
           <div className="shrink-0">
             {actionIsExternal ? (
               <a
