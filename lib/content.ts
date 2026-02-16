@@ -1,241 +1,126 @@
 // JesseGong/lib/content.ts
 
-import type {
-  AnyEntry,
-  BaseEntry,
-  CardModel,
-  ContentLink,
-  SectionKey,
-} from "./types";
+import type { AnyEntry, ContentCollectionKey } from "./types";
+
+import researchIndex from "../content/research";
+import projectsIndex from "../content/projects";
+import internshipsIndex from "../content/internships";
 
 /**
- * Slugify rule (auto-slug from title).
- * Keep this as the single source of truth so URLs remain stable.
+ * Central content API:
+ * - Source of truth lives in /content/**.
+ * - This module re-sorts defensively (per your requirement).
  */
-export function slugify(input: string): string {
-  return input
-    .toLowerCase()
-    .trim()
-    .replace(/@/g, " at ")
-    .replace(/&/g, " and ")
-    .replace(/[^\w\s-]/g, "")
-    .replace(/\s+/g, "-")
-    .replace(/-+/g, "-");
-}
 
-type RawEntryInput = Omit<BaseEntry, "id" | "slug" | "detailsHref"> & {
-  /** Optional override; default is slugify(title). */
-  slug?: string;
-  /** Optional override; default is `${section}-${slug}`. */
-  id?: string;
-  /** Optional override; default is `/${section}/${slug}`. */
-  detailsHref?: string;
+// -------------------------
+// Sorting helpers
+// -------------------------
+
+const MONTHS: Record<string, number> = {
+  jan: 1,
+  january: 1,
+  feb: 2,
+  february: 2,
+  mar: 3,
+  march: 3,
+  apr: 4,
+  april: 4,
+  may: 5,
+  jun: 6,
+  june: 6,
+  jul: 7,
+  july: 7,
+  aug: 8,
+  august: 8,
+  sep: 9,
+  sept: 9,
+  september: 9,
+  oct: 10,
+  october: 10,
+  nov: 11,
+  november: 11,
+  dec: 12,
+  december: 12,
 };
 
-function makeEntry(raw: RawEntryInput): AnyEntry {
-  const slug = raw.slug ?? slugify(raw.title);
-  const id = raw.id ?? `${raw.section}-${slug}`;
-  const detailsHref = raw.detailsHref ?? `/${raw.section}/${slug}`;
+type EndKey = { year: number; month: number; present: boolean };
 
-  return {
-    ...raw,
-    id,
-    slug,
-    detailsHref,
-  } as AnyEntry;
+function parseEndKey(timeframe: string): EndKey {
+  const tf = (timeframe ?? "").trim();
+
+  // Split on common dash variants: en dash, em dash, hyphen
+  const parts = tf.split(/–|—|-/).map((s) => s.trim());
+  const end = (parts.length >= 2 ? parts[parts.length - 1] : tf).toLowerCase();
+
+  if (end.includes("present") || end.includes("current")) {
+    return { year: 9999, month: 12, present: true };
+  }
+
+  // "May 2025"
+  const m1 = end.match(/\b([a-z]+)\s+(20\d{2})\b/i);
+  if (m1?.[1] && m1?.[2]) {
+    const month = MONTHS[m1[1].toLowerCase()] ?? 0;
+    const year = Number(m1[2]);
+    return { year: Number.isFinite(year) ? year : 0, month, present: false };
+  }
+
+  // fallback: just a year
+  const m2 = end.match(/\b(20\d{2})\b/);
+  if (m2?.[1]) {
+    const year = Number(m2[1]);
+    return { year: Number.isFinite(year) ? year : 0, month: 0, present: false };
+  }
+
+  return { year: 0, month: 0, present: false };
 }
 
-/** Utility: sort newest -> oldest when (and only when) year exists. */
-function sortByYearDesc<T extends { year?: number; sequenceInYear?: number }>(
-  arr: T[]
-): T[] {
-  return [...arr].sort((a, b) => {
-    const ay = a.year ?? -1;
-    const by = b.year ?? -1;
-    if (by !== ay) return by - ay;
-    const ao = a.sequenceInYear ?? 0;
-    const bo = b.sequenceInYear ?? 0;
-    return bo - ao;
-  });
+function compareByFinishDesc(a: AnyEntry, b: AnyEntry): number {
+  const A = parseEndKey(a.timeframe);
+  const B = parseEndKey(b.timeframe);
+
+  if (A.year !== B.year) return B.year - A.year;
+  if (A.month !== B.month) return B.month - A.month;
+
+  // Stable tie-breakers
+  if (a.title !== b.title) return a.title.localeCompare(b.title);
+  return a.id.localeCompare(b.id);
 }
 
-/* -------------------------------------------------------------------------- */
-/*  Content: keep arrays already ordered newest -> oldest per your rules       */
-/* -------------------------------------------------------------------------- */
+function sortEntries<T extends AnyEntry>(arr: T[]): T[] {
+  return [...arr].sort(compareByFinishDesc);
+}
 
-const RESEARCH_RAW: RawEntryInput[] = [
-  {
-    section: "research",
-    title: "AI4Science @ GT",
-    description: "Short description coming soon.",
-    timeframe: "TBD",
-    tags: ["AI", "Science"],
-    links: [
-      { label: "Details", href: "/research/ai4science-at-gt", kind: "details" },
-      { label: "GitHub", href: "https://github.com/Rosette2237", kind: "repo", openInNewTab: true },
-    ] as ContentLink[],
-  },
-  {
-    section: "research",
-    title: "Neuron-Level Interpretability",
-    description: "Short description coming soon.",
-    timeframe: "TBD",
-    tags: ["Interpretability", "Deep Learning"],
-    links: [
-      { label: "Details", href: "/research/neuron-level-interpretability", kind: "details" },
-      { label: "GitHub", href: "https://github.com/Rosette2237", kind: "repo", openInNewTab: true },
-    ] as ContentLink[],
-  },
-  {
-    section: "research",
-    title: "ISyE Summer Undergraduate Research Scholars Program",
-    description: "Short description coming soon.",
-    timeframe: "TBD",
-    tags: ["ISyE", "Research"],
-    links: [
-      { label: "Details", href: "/research/isye-summer-undergraduate-research-scholars-program", kind: "details" },
-      { label: "GitHub", href: "https://github.com/Rosette2237", kind: "repo", openInNewTab: true },
-    ] as ContentLink[],
-  },
-];
+// -------------------------
+// Content registry
+// -------------------------
 
-const PROJECTS_RAW: RawEntryInput[] = [
-  {
-    section: "projects",
-    title: "GT Market Place",
-    description: "Short description coming soon.",
-    timeframe: "TBD",
-    tags: ["Web", "Full-Stack"],
-    links: [
-      { label: "Details", href: "/projects/gt-market-place", kind: "details" },
-      { label: "GitHub", href: "https://github.com/Rosette2237", kind: "repo", openInNewTab: true },
-    ] as ContentLink[],
-  },
-  {
-    section: "projects",
-    title: "Sign Sync",
-    description: "Short description coming soon.",
-    timeframe: "TBD",
-    tags: ["Product", "UX"],
-    links: [
-      { label: "Details", href: "/projects/sign-sync", kind: "details" },
-      { label: "GitHub", href: "https://github.com/Rosette2237", kind: "repo", openInNewTab: true },
-    ] as ContentLink[],
-  },
-  {
-    section: "projects",
-    title: "Deep Learning Based Stock Prediction",
-    description: "Short description coming soon.",
-    timeframe: "TBD",
-    tags: ["Deep Learning", "Finance"],
-    links: [
-      { label: "Details", href: "/projects/deep-learning-based-stock-prediction", kind: "details" },
-      { label: "GitHub", href: "https://github.com/Rosette2237", kind: "repo", openInNewTab: true },
-    ] as ContentLink[],
-  },
-];
+const contentRegistry: Record<ContentCollectionKey, AnyEntry[]> = {
+  research: sortEntries(researchIndex as AnyEntry[]),
+  projects: sortEntries(projectsIndex as AnyEntry[]),
+  internships: sortEntries(internshipsIndex as AnyEntry[]),
 
-const INTERNSHIPS_RAW: RawEntryInput[] = [
-  {
-    section: "internships",
-    title: "Crossroads Community Ministries",
-    description: "Short description coming soon.",
-    timeframe: "TBD",
-    tags: ["Service", "Operations"],
-    links: [
-      { label: "Details", href: "/internships/crossroads-community-ministries", kind: "details" },
-      { label: "GitHub", href: "https://github.com/Rosette2237", kind: "repo", openInNewTab: true },
-    ] as ContentLink[],
-    // Fill these in later for year grouping:
-    // year: 2025,
-    // sequenceInYear: 1,
-  },
-  {
-    section: "internships",
-    title: "STEM Atlanta Women, Inc.",
-    description: "Short description coming soon.",
-    timeframe: "TBD",
-    tags: ["Education", "Community"],
-    links: [
-      { label: "Details", href: "/internships/stem-atlanta-women-inc", kind: "details" },
-      { label: "GitHub", href: "https://github.com/Rosette2237", kind: "repo", openInNewTab: true },
-    ] as ContentLink[],
-    // year: 2024,
-    // sequenceInYear: 0,
-  },
-];
-
-/* -------------------------------------------------------------------------- */
-/*  Public exports                                                            */
-/* -------------------------------------------------------------------------- */
-
-export const research = RESEARCH_RAW.map(makeEntry);
-export const projects = PROJECTS_RAW.map(makeEntry);
-export const internships = INTERNSHIPS_RAW.map(makeEntry);
-
-// Empty placeholders for now (you’ll add later in content/ or here)
-export const leadership: AnyEntry[] = [];
-export const awards: AnyEntry[] = [];
-export const skills: AnyEntry[] = [];
-export const interests: AnyEntry[] = [];
-
-export const bySection: Record<SectionKey, AnyEntry[]> = {
-  research,
-  projects,
-  internships,
-  leadership,
-  awards,
-  skills,
-  interests,
+  // Not switched yet (safe empty until you add content + index files)
+  leadership: [],
+  awards: [],
+  skills: [],
+  interests: [],
 };
 
-/**
- * For Navbar dropdowns: single source of truth derived from content.
- * Caps at 5 items as you requested.
- */
-export const navDropdowns: Partial<
-  Record<SectionKey, Array<{ label: string; href: string }>>
-> = {
-  research: research.slice(0, 5).map((e) => ({ label: e.title, href: e.detailsHref ?? `/research/${e.slug}` })),
-  projects: projects.slice(0, 5).map((e) => ({ label: e.title, href: e.detailsHref ?? `/projects/${e.slug}` })),
-  internships: internships.slice(0, 5).map((e) => ({ label: e.title, href: e.detailsHref ?? `/internships/${e.slug}` })),
-};
+// -------------------------
+// Public API
+// -------------------------
 
-/* -------------------------------------------------------------------------- */
-/*  Helpers for pages + static generation                                     */
-/* -------------------------------------------------------------------------- */
-
-export function getEntries(section: SectionKey): AnyEntry[] {
-  // Arrays are already authored newest -> oldest per your rules.
-  // Internships: if you later set year/sequenceInYear, we’ll return year-sorted.
-  if (section === "internships") return sortByYearDesc(bySection.internships);
-  return bySection[section];
+export function getEntries<K extends ContentCollectionKey>(collection: K): AnyEntry[] {
+  return [...(contentRegistry[collection] ?? [])];
 }
 
-export function getEntryBySlug(section: SectionKey, slug: string): AnyEntry | undefined {
-  return bySection[section].find((e) => e.slug === slug);
+export function getEntryBySlug<K extends ContentCollectionKey>(
+  collection: K,
+  slug: string
+): AnyEntry | undefined {
+  return (contentRegistry[collection] ?? []).find((e) => e.slug === slug);
 }
 
-export function getSlugs(section: SectionKey): string[] {
-  return bySection[section].map((e) => e.slug);
-}
-
-/**
- * For generateStaticParams() in /app/<section>/[slug]/page.tsx
- * Return shape: [{ slug: "..." }, ...]
- */
-export function getStaticParams(section: SectionKey): Array<{ slug: string }> {
-  return getSlugs(section).map((slug) => ({ slug }));
-}
-
-/** Convert an entry to the Card component’s expected fields. */
-export function toCardModel(entry: AnyEntry): CardModel {
-  return {
-    title: entry.title,
-    description: entry.description,
-    timeframe: entry.timeframe,
-    tags: entry.tags,
-    links: entry.links,
-    image: entry.image,
-  };
+export function getStaticParams<K extends ContentCollectionKey>(collection: K): Array<{ slug: string }> {
+  return (contentRegistry[collection] ?? []).map((e) => ({ slug: e.slug }));
 }
