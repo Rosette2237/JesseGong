@@ -3,24 +3,59 @@
 // JesseGong/app/research/page.tsx
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import SectionHeader from "../../components/SectionHeader";
 import { getEntries } from "../../lib/content";
 import type { AnyEntry } from "../../lib/types";
 
 type ResearchItem = AnyEntry & { section: "research" };
 
-function safePositionLabel(entry: ResearchItem): string {
-  // Placeholder until we add a dedicated field like `role` or `org`.
-  // You asked this “Bloomberg” slot be your research position.
-  return "Research Position (TBD)";
+function pickRoleTag(tags?: string[]) {
+  if (!tags?.length) return { role: "", rest: [] as string[] };
+
+  // Heuristic: treat any tag containing “Researcher” (or an em dash label) as the “position”
+  const role =
+    tags.find((t) => /researcher/i.test(t)) ??
+    tags.find((t) => t.includes("—")) ??
+    "";
+
+  const rest = role ? tags.filter((t) => t !== role) : tags;
+  return { role, rest };
+}
+
+function ArrowIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M5 12h12"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+      <path
+        d="M13 6l6 6-6 6"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
 }
 
 export default function ResearchPage() {
   const items = useMemo(() => getEntries("research") as ResearchItem[], []);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 
-  // Refs to each research row
+  // Refs to each research row (for click-to-center)
   const itemRefs = useRef<Array<HTMLElement | null>>([]);
 
   const scrollToIndex = (idx: number, behavior: ScrollBehavior = "smooth") => {
@@ -29,39 +64,6 @@ export default function ResearchPage() {
     // Center the item in the viewport
     el.scrollIntoView({ behavior, block: "center" });
   };
-
-  // Update activeIndex based on what’s in the “center band” of the viewport.
-  useEffect(() => {
-    if (!items.length) return;
-
-    const nodes = itemRefs.current.filter(Boolean) as HTMLElement[];
-    if (!nodes.length) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        // Choose the entry with the highest intersection ratio in our center band
-        const best = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => (b.intersectionRatio ?? 0) - (a.intersectionRatio ?? 0))[0];
-
-        if (!best?.target) return;
-
-        const idxStr = (best.target as HTMLElement).dataset.index;
-        const idx = idxStr ? Number(idxStr) : 0;
-        if (!Number.isNaN(idx)) setActiveIndex(idx);
-      },
-      {
-        // rootMargin shrinks the effective viewport to the middle band,
-        // so “active” means “near the center”.
-        root: null,
-        rootMargin: "-45% 0px -45% 0px",
-        threshold: [0, 0.25, 0.5, 0.75, 1],
-      }
-    );
-
-    nodes.forEach((n) => observer.observe(n));
-    return () => observer.disconnect();
-  }, [items.length]);
 
   if (!items.length) {
     return (
@@ -78,11 +80,11 @@ export default function ResearchPage() {
         title="Research"
         description="Selected research experiences, newest to oldest."
         variant="tab"
-        action={{ label: "CV", href: "/files/cv.pdf", openInNewTab: true }}
+        // Intentionally no CV action here (CV visibility should be controlled centrally).
       />
 
-      <div className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-[72px_1fr]">
-        {/* Sidebar: dashed rail + clickable segments */}
+      <div className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-[84px_1fr]">
+        {/* Sidebar: dashed rail + clickable segments (LEFT) */}
         <aside className="hidden md:block">
           <div className="sticky top-24">
             <div className="relative pl-6">
@@ -92,11 +94,17 @@ export default function ResearchPage() {
               <ul className="flex flex-col gap-6">
                 {items.map((it, idx) => {
                   const isActive = idx === activeIndex;
+                  const isHover = idx === hoverIndex;
+                  const isHot = isActive || isHover;
+
                   return (
                     <li key={it.id} className="relative">
                       <button
                         type="button"
                         aria-label={`Jump to ${it.title}`}
+                        title={it.title}
+                        onMouseEnter={() => setHoverIndex(idx)}
+                        onMouseLeave={() => setHoverIndex(null)}
                         onClick={() => {
                           setActiveIndex(idx);
                           scrollToIndex(idx);
@@ -106,12 +114,12 @@ export default function ResearchPage() {
                         <span
                           className={[
                             "h-3 w-3 rounded-full border transition-transform",
-                            isActive
-                              ? "border-transparent"
+                            isHot
+                              ? "border-transparent scale-110"
                               : "border-slate-400 group-hover:border-slate-600",
                           ].join(" ")}
                           style={{
-                            backgroundColor: isActive ? "var(--accent-fill)" : "transparent",
+                            backgroundColor: isHot ? "var(--accent-fill)" : "transparent",
                           }}
                         />
                         <span className="sr-only">{it.title}</span>
@@ -129,6 +137,9 @@ export default function ResearchPage() {
           <div className="flex flex-col">
             {items.map((it, idx) => {
               const isActive = idx === activeIndex;
+              const isHover = idx === hoverIndex;
+
+              const { role, rest: techTags } = pickRoleTag(it.tags);
 
               return (
                 <article
@@ -138,39 +149,86 @@ export default function ResearchPage() {
                   }}
                   data-index={idx}
                   className={[
-                    "rounded-xl-soft border border-slate-200 bg-white",
+                    "rounded-xl-soft border bg-white",
                     "transition-transform transition-shadow duration-200",
                     isActive ? "shadow-md" : "shadow-sm",
-                    isActive ? "scale-[1]" : "scale-[0.985] opacity-80",
+                    isActive ? "scale-[1.02] opacity-100" : "scale-[0.99] opacity-90",
+                    isHover && !isActive ? "shadow-md opacity-100" : "",
                     "mb-10",
                   ].join(" ")}
-                  onMouseEnter={() => {
-                    // Hover should “focus” the item and center it
-                    setActiveIndex(idx);
-                    scrollToIndex(idx);
+                  style={{
+                    borderColor: isActive ? "rgba(0,0,0,0.08)" : "rgba(0,0,0,0.08)",
+                    boxShadow: isActive ? "0 12px 30px rgba(0,0,0,0.08)" : undefined,
                   }}
+                  onMouseEnter={() => setHoverIndex(idx)}
+                  onMouseLeave={() => setHoverIndex(null)}
+                  aria-current={isActive ? "true" : undefined}
                 >
                   <div className="p-6">
-                    {/* Top meta row: timeframe | position */}
-                    <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm">
-                      <span className="font-medium text-slate-800">{it.timeframe}</span>
-                      <span className="text-slate-400">|</span>
-                      <span className="text-slate-600">{safePositionLabel(it)}</span>
+                    {/* Top row: timeframe | position + right arrow to detail page */}
+                    <div className="flex items-start justify-between gap-6">
+                      <div className="min-w-0">
+                        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm">
+                          <span className="font-medium text-slate-800">
+                            {it.timeframe}
+                          </span>
+                          <span className="text-slate-400">|</span>
+                          <span className="text-slate-600">
+                            {role || "Research Position (TBD)"}
+                          </span>
+                        </div>
+
+                        {/* Title: click to zoom + center within THIS page */}
+                        <div className="mt-3">
+                          <button
+                            type="button"
+                            className="link-sweep text-left text-2xl font-semibold tracking-tight"
+                            onClick={() => {
+                              setActiveIndex(idx);
+                              scrollToIndex(idx);
+                            }}
+                          >
+                            {it.title}
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Arrow button: go to dedicated detail page */}
+                      <Link
+                        href={it.detailsHref ?? `/research/${it.slug}`}
+                        aria-label={`Open details for ${it.title}`}
+                        className={[
+                          "btn-sweep inline-flex h-11 w-11 items-center justify-center rounded-full",
+                          "border border-slate-200 bg-white text-slate-900",
+                        ].join(" ")}
+                      >
+                        <ArrowIcon className="transition-transform duration-200 group-hover:translate-x-0.5" />
+                      </Link>
                     </div>
 
-                    {/* Title: click to zoom/focus within THIS page */}
-                    <div className="mt-3">
-                      <button
-                        type="button"
-                        className="link-sweep text-left text-2xl font-semibold tracking-tight"
-                        onClick={() => {
-                          setActiveIndex(idx);
-                          scrollToIndex(idx);
-                        }}
-                      >
-                        {it.title}
-                      </button>
-                    </div>
+                    {/* Always-on: tech stack (compact when not active, full when active) */}
+                    {techTags?.length ? (
+                      <div className="mt-4">
+                        <p className="text-xs font-semibold uppercase tracking-wider text-slate-600">
+                          Tech Stack
+                        </p>
+                        <ul className="mt-2 flex flex-wrap gap-2">
+                          {(isActive ? techTags : techTags.slice(0, 5)).map((t) => (
+                            <li
+                              key={t}
+                              className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700"
+                            >
+                              {t}
+                            </li>
+                          ))}
+                          {!isActive && techTags.length > 5 ? (
+                            <li className="px-2.5 py-1 text-xs font-medium text-slate-500">
+                              +{techTags.length - 5} more
+                            </li>
+                          ) : null}
+                        </ul>
+                      </div>
+                    ) : null}
 
                     {/* Expanded content only when active */}
                     {isActive ? (
@@ -179,28 +237,11 @@ export default function ResearchPage() {
                           {it.description}
                         </p>
 
-                        {/* Tech stacks (tags) */}
-                        {it.tags?.length ? (
-                          <div className="mt-4">
-                            <p className="text-xs font-semibold uppercase tracking-wider text-slate-600">
-                              Tech Stack
-                            </p>
-                            <ul className="mt-2 flex flex-wrap gap-2">
-                              {it.tags.map((t) => (
-                                <li
-                                  key={t}
-                                  className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700"
-                                >
-                                  {t}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        ) : null}
-
-                        {/* Details button: goes to the dedicated detail page */}
                         <div className="mt-6">
-                          <Link href={it.detailsHref ?? `/research/${it.slug}`} className="btn-sweep">
+                          <Link
+                            href={it.detailsHref ?? `/research/${it.slug}`}
+                            className="btn-sweep"
+                          >
                             View details
                           </Link>
                         </div>

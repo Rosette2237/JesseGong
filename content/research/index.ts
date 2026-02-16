@@ -11,7 +11,8 @@ import type { ResearchEntry } from "../../lib/types";
 
 import ai4science from "./ai4science-at-gt";
 import neuron from "./neuron-level-interpretability";
+import surs from "./isye-summer-undergraduate-research-scholars-program";
 
-export const research: ResearchEntry[] = [ai4science, neuron];
+export const research: ResearchEntry[] = [ai4science, neuron, surs];
 
 export default research;
