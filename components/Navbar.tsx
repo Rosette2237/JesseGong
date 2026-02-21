@@ -113,10 +113,10 @@ export default function Navbar() {
     []
   );
 
-  const blueHover = "hover:text-blue-700";
-  const blueActive = "text-blue-700";
-  const neutral = "text-slate-800";
-  const subtle = "text-slate-600";
+  // Updated color classes for Flag Blue
+  const flagBlue = "text-[#002856]";
+  const activeLink = "text-[#002856] font-bold";
+  const subtle = "text-[#002856]/70";
 
   const iconSrcByKey: Record<string, string> = {
     github: withBasePath("/images/icons/github.svg"),
@@ -129,7 +129,7 @@ export default function Navbar() {
         {/* Brand */}
         <Link
           href={withBasePath("/")}
-          className={`text-base font-semibold tracking-tight ${neutral} ${blueHover}`}
+          className={`text-base font-semibold tracking-tight ${flagBlue} hover:opacity-80 transition-opacity`}
         >
           Boyang Gong
         </Link>
@@ -146,8 +146,8 @@ export default function Navbar() {
                   key={item.key}
                   href={item.href}
                   className={[
-                    "text-sm font-medium transition-colors",
-                    active ? blueActive : `${neutral} ${blueHover}`,
+                    "text-sm font-medium transition-colors link-sweep",
+                    active ? activeLink : flagBlue,
                   ].join(" ")}
                 >
                   {item.label}
@@ -168,8 +168,8 @@ export default function Navbar() {
                 <NavLink
                   href={item.href}
                   className={[
-                    "text-sm font-medium transition-colors",
-                    active ? blueActive : `${neutral} ${blueHover}`,
+                    "text-sm font-medium transition-colors link-sweep",
+                    active ? activeLink : flagBlue,
                   ].join(" ")}
                 >
                   {item.label}
@@ -189,12 +189,9 @@ export default function Navbar() {
                       <li key={sub.href} role="none">
                         <NavLink
                           href={sub.href}
-                          className={[
-                            "block px-4 py-2 text-sm transition-colors",
-                            `${neutral} hover:bg-slate-50 hover:text-blue-700`,
-                          ].join(" ")}
+                          className={`block px-4 py-2 text-sm transition-colors ${flagBlue} hover:bg-slate-50`}
                         >
-                          {sub.label}
+                          <span className="link-sweep inline-block">{sub.label}</span>
                         </NavLink>
                       </li>
                     ))}
@@ -215,7 +212,7 @@ export default function Navbar() {
                 <NavLink
                   key={a.key}
                   href={a.href}
-                  className={`text-sm font-medium ${neutral} ${blueHover}`}
+                  className={`text-sm font-medium link-sweep ${flagBlue}`}
                 >
                   {a.label}
                 </NavLink>
@@ -243,7 +240,7 @@ export default function Navbar() {
         {/* Mobile: hamburger */}
         <button
           type="button"
-          className="inline-flex items-center justify-center rounded-md border border-slate-200 bg-white p-2 text-slate-700 hover:bg-slate-50 md:hidden"
+          className={`inline-flex items-center justify-center rounded-md border border-slate-200 bg-white p-2 ${flagBlue} hover:bg-slate-50 md:hidden`}
           aria-label="Open menu"
           aria-expanded={drawerOpen}
           onClick={() => setDrawerOpen(true)}
@@ -289,7 +286,7 @@ export default function Navbar() {
           <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
             <Link
               href={withBasePath("/")}
-              className={`text-base font-semibold tracking-tight ${neutral}`}
+              className={`text-base font-semibold tracking-tight ${flagBlue}`}
               onClick={() => setDrawerOpen(false)}
             >
               Boyang Gong
@@ -297,7 +294,7 @@ export default function Navbar() {
 
             <button
               type="button"
-              className="rounded-md p-2 text-slate-700 hover:bg-slate-50"
+              className={`rounded-md p-2 ${flagBlue} hover:bg-slate-50`}
               aria-label="Close menu"
               onClick={() => setDrawerOpen(false)}
             >
@@ -325,7 +322,7 @@ export default function Navbar() {
                     onClick={() => setDrawerOpen(false)}
                     className={[
                       "flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                      active ? `bg-slate-50 ${blueActive}` : `${neutral} hover:bg-slate-50 hover:text-blue-700`,
+                      active ? `bg-slate-50 ${activeLink}` : `${flagBlue} hover:bg-slate-50 hover:opacity-80`,
                     ].join(" ")}
                   >
                     {item.label}
@@ -341,7 +338,7 @@ export default function Navbar() {
                           onClick={() => setDrawerOpen(false)}
                           className={[
                             "block rounded-md px-3 py-2 text-sm transition-colors",
-                            `${subtle} hover:bg-slate-50 hover:text-blue-700`,
+                            `${subtle} hover:bg-slate-50 hover:opacity-80`,
                           ].join(" ")}
                         >
                           {sub.label}
@@ -363,7 +360,7 @@ export default function Navbar() {
                       <NavLink
                         key={a.key}
                         href={a.href}
-                        className={`text-sm font-medium ${neutral} ${blueHover}`}
+                        className={`text-sm font-medium ${flagBlue} hover:opacity-80`}
                         onClick={() => setDrawerOpen(false)}
                       >
                         {a.label}

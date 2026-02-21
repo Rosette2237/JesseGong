@@ -39,7 +39,7 @@ function renderLink(link: CardLink) {
   const baseClass =
     link.kind === "button"
       ? "btn-sweep"
-      : "link-sweep text-sm"; // link-sweep handles underline + yellow hover
+      : "link-sweep text-sm"; // link-sweep handles underline + hover
 
   if (external) {
     return (
@@ -88,7 +88,7 @@ export default function Card({
     >
       {image ? (
         <div className="overflow-hidden rounded-t-[inherit]">
-          {/* Using <img> keeps this simple for static hosting/export flows :contentReference[oaicite:2]{index=2} */}
+          {/* Using <img> keeps this simple for static hosting/export flows */}
           <img
             src={withBasePath(image.src)}
             alt={image.alt}
@@ -100,7 +100,8 @@ export default function Card({
 
       <div className="p-5">
         <div className="flex items-start justify-between gap-4">
-          <h3 className="text-lg font-semibold tracking-tight text-slate-900">
+          {/* Updated card title to Flag Blue */}
+          <h3 className="text-lg font-semibold tracking-tight text-[#002856]">
             {title}
           </h3>
           <p className="shrink-0 text-xs font-medium text-slate-600">

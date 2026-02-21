@@ -68,7 +68,8 @@ function HomePreviewBlock({
           {preview.title}
         </p>
 
-        <h2 className="mt-3 font-heading text-2xl font-semibold tracking-tight text-slate-900">
+        {/* Updated item title to Flag Blue */}
+        <h2 className="mt-3 font-heading text-2xl font-semibold tracking-tight text-[#002856]">
           {preview.itemTitle}
         </h2>
 

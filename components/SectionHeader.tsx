@@ -38,7 +38,7 @@ export type SectionHeaderProps = {
 };
 
 function isExternalHref(href?: string): boolean {
-  if (!href) return false; // Guard against missing href to prevent runtime errors
+  if (!href) return false;
   return href.startsWith("http://") || href.startsWith("https://") || href.startsWith("mailto:");
 }
 
@@ -53,10 +53,11 @@ export default function SectionHeader({
 }: SectionHeaderProps) {
   const TitleTag = as;
 
+  // Uses your updated custom size logic
   const titleClass =
     variant === "home"
       ? "text-4xl md:text-5xl"
-      : "text-2xl md:text-3xl";
+      : "text-3xl md:text-4xl";
 
   const hasActionHref = Boolean(action?.href);
   const actionIsExternal = hasActionHref ? isExternalHref(action!.href) : false;
@@ -66,21 +67,24 @@ export default function SectionHeader({
       : withBasePath(action!.href)
     : undefined;
 
-  // Default behavior: open external links in a new tab unless user overrides
   const openInNewTab =
     action?.openInNewTab ?? (actionIsExternal ? true : false);
+
+  // Redundancy Filter: Only show eyebrow if it exists AND doesn't match the title
+  const showEyebrow = eyebrow && eyebrow.toLowerCase() !== title.toLowerCase();
 
   return (
     <section className={`w-full ${className}`}>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
         <div className="min-w-0">
-          {eyebrow ? (
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-600">
+          {showEyebrow ? (
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
               {eyebrow}
             </p>
           ) : null}
 
-          <TitleTag className={`font-heading ${titleClass} font-semibold tracking-tight text-slate-900`}>
+          {/* Updated title color to Flag Blue */}
+          <TitleTag className={`font-heading ${titleClass} font-semibold tracking-tight text-[#002856]`}>
             {title}
           </TitleTag>
 

@@ -4,13 +4,11 @@
 
 @layer base {
   :root {
-    /* “Yellow” accent:
-       - fill is brighter
-       - text is darker for contrast on light backgrounds */
-    --accent-fill: #fde047; /* yellow-300-ish */
-    --accent-text: #ca8a04; /* amber-600-ish */
-
-    /* More-rounded default (used by our reusable classes) */
+    /* Brand Palette */
+    --flag-blue: #002856;
+    --infantry-blue: #7badd3;
+    --ring-gold: #edae17;
+    
     --radius-lg: 1rem;
     --radius-xl: 1.25rem;
   }
@@ -28,30 +26,29 @@
 
 @layer components {
   /* =========================
-     Buttons: yellow sweep hover
-     Usage:
-       <button className="btn-sweep">...</button>
-       <a className="btn-sweep" href="...">...</a>
+     Buttons: Infantry Blue -> Ring Gold Sweep
      ========================= */
   .btn-sweep {
     @apply relative inline-flex items-center justify-center gap-2 overflow-hidden
-           border border-slate-200 bg-white px-4 py-2 text-sm font-medium
-           text-slate-800 transition-colors duration-200;
+           border border-transparent bg-[#7badd3] px-4 py-2 text-sm font-medium
+           text-white transition-colors duration-300 ease-in-out;
 
     border-radius: var(--radius-xl);
+    z-index: 1;
   }
 
+  /* The Ring Gold Sweep Layer */
   .btn-sweep::before {
     content: "";
     position: absolute;
     inset: 0;
-    background: var(--accent-fill);
-
+    background-color: #edae17;
+    
     transform: scaleX(0);
     transform-origin: left;
-    transition: transform 260ms ease;
-
-    z-index: 0;
+    transition: transform 400ms cubic-bezier(0.4, 0, 0.2, 1);
+    
+    z-index: -1; 
     border-radius: inherit;
   }
 
@@ -59,31 +56,27 @@
     transform: scaleX(1);
   }
 
-  .btn-sweep > * {
-    position: relative;
-    z-index: 1;
+  /* Change text to Black on Gold hover */
+  .btn-sweep:hover {
+    color: #000000;
   }
 
-  .btn-sweep:focus-visible {
-    outline: 2px solid var(--accent-text);
-    outline-offset: 3px;
+  /* Research Arrow/Icon Variant - remains white/black as requested */
+  .btn-sweep-white {
+    @apply bg-white text-black border border-slate-200;
   }
-
-  /* Icon-size variant for small square icon links/buttons (GitHub/CV) */
-  .btn-sweep-icon {
-    @apply h-9 w-9 p-0;
-    border-radius: var(--radius-lg);
+  .btn-sweep-white::before {
+    display: none;
   }
 
   /* =========================
-     Links: underline sweep hover
-     Usage:
-       <a className="link-sweep" href="...">Link</a>
+     Links: Flag Blue text, Flag Blue underline on hover
      ========================= */
   .link-sweep {
-    @apply relative inline-block font-medium text-slate-800 transition-colors duration-200;
+    @apply relative inline-block font-medium text-[#002856] transition-colors duration-200;
   }
 
+  /* Underline is now Flag Blue instead of Gold */
   .link-sweep::after {
     content: "";
     position: absolute;
@@ -91,15 +84,11 @@
     right: 0;
     bottom: -2px;
     height: 2px;
-    background: var(--accent-fill);
+    background-color: #002856;
 
     transform: scaleX(0);
     transform-origin: left;
-    transition: transform 260ms ease;
-  }
-
-  .link-sweep:hover {
-    color: var(--accent-text);
+    transition: transform 350ms ease;
   }
 
   .link-sweep:hover::after {
@@ -107,19 +96,26 @@
   }
 
   .link-sweep:focus-visible {
-    outline: 2px solid var(--accent-text);
+    outline: 2px solid var(--flag-blue);
     outline-offset: 3px;
     border-radius: 0.375rem;
   }
 }
 
 @layer utilities {
-  /* Updated to use Garamond for headlines and campus use */
   .font-heading {
     font-family: var(--font-garamond), serif;
   }
 
-  /* Helpful for cards/containers when you want “more rounded” */
+  /* Utility class to be used for titles and navbar */
+  .text-flag-blue {
+    color: #002856;
+  }
+
+  .bg-flag-blue {
+    background-color: #002856;
+  }
+
   .rounded-xl-soft {
     border-radius: var(--radius-xl);
   }

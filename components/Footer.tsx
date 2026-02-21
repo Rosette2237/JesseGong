@@ -98,10 +98,11 @@ function FooterLink({
       href={href}
       target={external ? "_blank" : undefined}
       rel={external ? "noopener noreferrer" : undefined}
-      className="group inline-flex items-center gap-2 text-sm text-slate-700 transition-colors hover:text-blue-700"
+      className="group inline-flex items-center gap-3 text-sm text-white/90 transition-colors hover:text-[#edae17]"
     >
-      <span className="inline-flex h-5 w-5 items-center justify-center">
-        <Icon className="h-4 w-4 text-slate-500 transition-colors group-hover:text-blue-700" />
+      {/* Increased container to h-8 w-8 and Icon to h-6 w-6 */}
+      <span className="inline-flex h-8 w-8 items-center justify-center">
+        <Icon className="h-6 w-6 text-white/70 transition-colors group-hover:text-[#edae17]" />
       </span>
       <span>{label}</span>
     </a>
@@ -112,7 +113,7 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="w-full border-t border-slate-200 bg-white">
+    <footer className="w-full border-t-0 bg-[#002856]">
       <div className="mx-auto w-full max-w-7xl px-6 py-10">
         <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
           <FooterLink href={LINKS.email} label="jessegby@gmail.com" Icon={IconEmail} />
@@ -120,7 +121,7 @@ export default function Footer() {
           <FooterLink href={LINKS.instagram} label="Instagram" Icon={IconInstagram} />
         </div>
 
-        <p className="mt-6 text-sm text-slate-600">
+        <p className="mt-6 text-sm text-white/70">
           Copyright © {year} Boyang Gong. All rights reserved.
         </p>
       </div>
