@@ -225,7 +225,7 @@ export default function HomePage() {
               </p>
 
               <p>
-                My professional and project-based background spans software
+                <strong>My professional</strong> and project-based background spans software
                 architecture, data-driven optimization, and quantitative finance.
                 I have designed scalable platforms to enhance operational
                 efficiency and engineered predictive deep learning frameworks for
