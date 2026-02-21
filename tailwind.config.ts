@@ -8,7 +8,13 @@ export default {
     "./content/**/*.{ts,tsx}"
   ],
   theme: {
-    extend: {}
+    extend: {
+      fontFamily: {
+        sans: ["var(--font-open-sans)", "ui-sans-serif", "system-ui"],
+        serif: ["var(--font-garamond)", "serif"],
+        heading: ["var(--font-garamond)", "serif"],
+      }
+    }
   },
   plugins: []
 } satisfies Config;

@@ -1,22 +1,22 @@
 // JesseGong/app/layout.tsx
 
 import type { Metadata } from "next";
-import { Inter, Space_Grotesk } from "next/font/google";
+import { EB_Garamond, Open_Sans } from "next/font/google";
 
 import "./globals.css";
 
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
-const inter = Inter({
+const openSans = Open_Sans({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-open-sans",
   display: "swap",
 });
 
-const spaceGrotesk = Space_Grotesk({
+const ebGaramond = EB_Garamond({
   subsets: ["latin"],
-  variable: "--font-space-grotesk",
+  variable: "--font-garamond",
   display: "swap",
 });
 
@@ -27,12 +27,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`}>
-      <body className={`${inter.className} bg-slate-50 text-slate-900`}>
+    <html lang="en" className={`${openSans.variable} ${ebGaramond.variable}`}>
+      <body className={`${openSans.className} bg-slate-50 text-slate-900`}>
         <div className="min-h-screen">
           <Navbar />
 
-          {/* Wider than the navbar container for a more open layout */}
           <main className="mx-auto w-full max-w-7xl px-6 py-10">
             {children}
           </main>

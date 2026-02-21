@@ -1,10 +1,9 @@
 import Link from "next/link";
 import SectionHeader from "../components/SectionHeader";
+import RotatingAbout from "../components/RotatingAbout";
 import { getEntries } from "../lib/content";
 import { withBasePath } from "../lib/site";
 import type { AnyEntry } from "../lib/types";
-
-// Skills are currently modeled as custom data (not via lib/content.ts)
 import { technicalStack } from "../content/skills/data";
 
 type Preview = {
@@ -16,14 +15,12 @@ type Preview = {
     | "skills"
     | "awards"
     | "interests";
-  title: string; // category title
-  href: string; // category route
-  // Optional category preview image (not the item image). You can add these later.
+  title: string;
+  href: string;
   imageSrc?: string;
   imageAlt?: string;
-  // Text to display for the most recent item
   itemTitle: string;
-  itemMeta: string; // timeframe or short meta line
+  itemMeta: string;
   itemDescription: string;
 };
 
@@ -92,14 +89,12 @@ function HomePreviewBlock({
 }
 
 export default function HomePage() {
-  // Pull “most recent” entries based on your lib/content sorting rules.
   const latestInternship = pickMostRecent("internships");
   const latestResearch = pickMostRecent("research");
   const latestProject = pickMostRecent("projects");
   const latestLeadership = pickMostRecent("leadership");
   const latestAward = pickMostRecent("awards");
 
-  // Build Home previews in your required order.
   const previews: Preview[] = [
     {
       key: "internships",
@@ -186,7 +181,7 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="w-full">
+    <div className="w-full overflow-hidden">
       {/* Hero header */}
       <div className="mt-2">
         <SectionHeader
@@ -207,71 +202,26 @@ export default function HomePage() {
         />
 
         {/* About (left) + Vertical Hero Image (right) */}
-        <div className="mt-8 grid gap-8 md:grid-cols-2 md:items-start">
-          {/* About card (LEFT) */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 md:p-8">
-            <h2 className="font-heading text-xl font-semibold text-slate-900">
-              About
-            </h2>
-
-            <div className="mt-4 space-y-4 text-base leading-relaxed text-slate-700">
-              <p>
-                I am an Industrial and Systems Engineering and Computer Science
-                double major at the Georgia Institute of Technology with a 4.0
-                GPA, specializing in Data Science. My work centers on the
-                intersection of optimization and intelligent systems, leveraging
-                a robust foundation in deep learning and statistical modeling to
-                transform complex datasets into actionable strategic insights.
-              </p>
-
-              <p>
-                <strong>My professional</strong> and project-based background spans software
-                architecture, data-driven optimization, and quantitative finance.
-                I have designed scalable platforms to enhance operational
-                efficiency and engineered predictive deep learning frameworks for
-                equity analysis and market forecasting. My quantitative
-                proficiency is further underscored by my success as a top-ranked
-                finalist in the Citadel Quant League, where I applied advanced
-                mathematical skills to navigate financial markets. Additionally,
-                my research explores the underlying mechanics of AI, specifically
-                focusing on model interpretability and forecasting through
-                high-performance computing.
-              </p>
-
-              <p>
-                I have been recognized for excellence through international
-                awards in mathematics and physics and hold memberships in the Tau
-                Beta Pi and Alpha Pi Mu engineering honor societies. My
-                leadership as a university orientation leader and international
-                interpreter highlights my ability to manage complex logistics and
-                communicate effectively across global audiences.
-              </p>
-
-              <p>
-                Beyond my technical pursuits, I am an avid photographer and
-                hiker who finds inspiration in the outdoors. I also played
-                competitive soccer in high school and achieved ABRSM Grade 8
-                certification in piano, bringing the same focused and curious
-                mindset to my personal interests as I do to my professional life.
-              </p>
-            </div>
+        <div className="mt-8 grid gap-8 md:grid-cols-2 md:items-stretch min-h-[550px] md:min-h-[650px]">
+          
+          {/* About stack (LEFT) */}
+          <div className="flex items-center h-full">
+            <RotatingAbout />
           </div>
 
           {/* Vertical hero image (RIGHT) */}
-          <div className="md:flex md:justify-end">
-            <div className="w-full max-w-md overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
-              <img
-                src={withBasePath("/images/hero.png")}
-                alt="Boyang Gong — hero"
-                className="h-[520px] w-full object-cover md:h-[620px]"
-                loading="lazy"
-              />
-            </div>
+          <div className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 flex-1">
+            <img
+              src={withBasePath("/images/hero.png")}
+              alt="Boyang Gong — hero"
+              className="h-full w-full object-cover"
+              loading="lazy"
+            />
           </div>
         </div>
       </div>
 
-      {/* Alternating previews (unchanged) */}
+      {/* Alternating previews */}
       <div className="mt-10 space-y-10">
         {previews.map((p, idx) => (
           <HomePreviewBlock key={p.key} preview={p} reverse={idx % 2 === 1} />

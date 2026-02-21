@@ -22,6 +22,7 @@
 
   body {
     @apply text-base antialiased;
+    font-family: var(--font-open-sans), ui-sans-serif, system-ui;
   }
 }
 
@@ -113,9 +114,9 @@
 }
 
 @layer utilities {
-  /* Only use this where you want Space Grotesk (per your rule) */
+  /* Updated to use Garamond for headlines and campus use */
   .font-heading {
-    font-family: var(--font-space-grotesk), var(--font-inter), ui-sans-serif, system-ui;
+    font-family: var(--font-garamond), serif;
   }
 
   /* Helpful for cards/containers when you want “more rounded” */
