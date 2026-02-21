@@ -105,7 +105,7 @@ export default function HomePage() {
       key: "internships",
       title: "Internships",
       href: "/internships",
-      imageSrc: latestInternship?.image?.src, // uses item image if present
+      imageSrc: latestInternship?.image?.src,
       imageAlt: latestInternship?.image?.alt,
       itemTitle: latestInternship?.title ?? "Internships",
       itemMeta: latestInternship?.timeframe ?? "Most recent internship",
@@ -153,7 +153,6 @@ export default function HomePage() {
       key: "skills",
       title: "Skills",
       href: "/skills",
-      // No item image requirement here; leave placeholder until you add a category image
       imageSrc: undefined,
       imageAlt: undefined,
       itemTitle: "Technical Stack & Core Skills",
@@ -188,7 +187,7 @@ export default function HomePage() {
 
   return (
     <div className="w-full">
-      {/* Hero */}
+      {/* Hero header */}
       <div className="mt-2">
         <SectionHeader
           eyebrow="Boyang Gong"
@@ -207,32 +206,72 @@ export default function HomePage() {
           }
         />
 
-        {/* HERO IMAGE (added) */}
-        <div className="mt-8 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
-          <img
-            src={withBasePath("/images/hero.png")}
-            alt="Boyang Gong — hero"
-            className="h-64 w-full object-cover md:h-[420px]"
-            loading="lazy"
-          />
-        </div>
+        {/* About (left) + Vertical Hero Image (right) */}
+        <div className="mt-8 grid gap-8 md:grid-cols-2 md:items-start">
+          {/* About card (LEFT) */}
+          <div className="rounded-2xl border border-slate-200 bg-white p-6 md:p-8">
+            <h2 className="font-heading text-xl font-semibold text-slate-900">
+              About
+            </h2>
 
-        {/* About me (must be above any sample showcase) */}
-        <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-6 md:p-8">
-          <h2 className="font-heading text-xl font-semibold text-slate-900">
-            About
-          </h2>
-          <p className="mt-4 text-base leading-relaxed text-slate-700">
-            I am an undergraduate student at the Georgia Institute of Technology,
-            majoring in Industrial Engineering and Computer Science. I am broadly
-            interested in machine learning, neuron networks, and data science. I
-            enjoy building things that combine these fields with an emphasis on
-            real-world applications.
-          </p>
+            <div className="mt-4 space-y-4 text-base leading-relaxed text-slate-700">
+              <p>
+                I am an Industrial and Systems Engineering and Computer Science
+                double major at the Georgia Institute of Technology with a 4.0
+                GPA, specializing in Data Science. My work centers on the
+                intersection of optimization and intelligent systems, leveraging
+                a robust foundation in deep learning and statistical modeling to
+                transform complex datasets into actionable strategic insights.
+              </p>
+
+              <p>
+                My professional and project-based background spans software
+                architecture, data-driven optimization, and quantitative finance.
+                I have designed scalable platforms to enhance operational
+                efficiency and engineered predictive deep learning frameworks for
+                equity analysis and market forecasting. My quantitative
+                proficiency is further underscored by my success as a top-ranked
+                finalist in the Citadel Quant League, where I applied advanced
+                mathematical skills to navigate financial markets. Additionally,
+                my research explores the underlying mechanics of AI, specifically
+                focusing on model interpretability and forecasting through
+                high-performance computing.
+              </p>
+
+              <p>
+                I have been recognized for excellence through international
+                awards in mathematics and physics and hold memberships in the Tau
+                Beta Pi and Alpha Pi Mu engineering honor societies. My
+                leadership as a university orientation leader and international
+                interpreter highlights my ability to manage complex logistics and
+                communicate effectively across global audiences.
+              </p>
+
+              <p>
+                Beyond my technical pursuits, I am an avid photographer and
+                hiker who finds inspiration in the outdoors. I also played
+                competitive soccer in high school and achieved ABRSM Grade 8
+                certification in piano, bringing the same focused and curious
+                mindset to my personal interests as I do to my professional life.
+              </p>
+            </div>
+          </div>
+
+          {/* Vertical hero image (RIGHT) */}
+          <div className="md:flex md:justify-end">
+            <div className="w-full max-w-md overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
+              <img
+                src={withBasePath("/images/hero.png")}
+                alt="Boyang Gong — hero"
+                className="h-[520px] w-full object-cover md:h-[620px]"
+                loading="lazy"
+              />
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Alternating previews */}
+      {/* Alternating previews (unchanged) */}
       <div className="mt-10 space-y-10">
         {previews.map((p, idx) => (
           <HomePreviewBlock key={p.key} preview={p} reverse={idx % 2 === 1} />

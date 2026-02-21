@@ -21,7 +21,7 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Boyang Gong's website",
+  title: "Boyang Gong",
   description: "This is a personal website for Boyang Gong",
 };
 
